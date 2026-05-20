@@ -1,0 +1,58 @@
+import cv2 as cv
+import numpy as np
+anh_goc = cv.imread("image.jpg")
+if anh_goc is None:
+    print("Không tìm thấy ảnh!")
+    exit()
+cv.namedWindow("Do sang & Tuong phan")
+def khong_lam_gi(x):
+    pass
+cv.createTrackbar(
+    "Tuong phan",
+    "Do sang & Tuong phan",
+    100,
+    300,
+    khong_lam_gi
+)
+cv.createTrackbar(
+    "Do sang",
+    "Do sang & Tuong phan",
+    100,
+    200,
+    khong_lam_gi
+)
+while True:
+    gia_tri_tuong_phan = cv.getTrackbarPos(
+        "Tuong phan",
+        "Do sang & Tuong phan"
+    )
+    gia_tri_do_sang = cv.getTrackbarPos(
+        "Do sang",
+        "Do sang & Tuong phan"
+    )
+    he_so_tuong_phan = gia_tri_tuong_phan / 100.0
+    he_so_do_sang = gia_tri_do_sang - 100
+    anh_ket_qua = cv.convertScaleAbs(
+        anh_goc,
+        alpha=he_so_tuong_phan,
+        beta=he_so_do_sang
+    )
+    chu_hien_thi = (
+        f'Tuong phan: {he_so_tuong_phan:.2f}  '
+        f'Do sang: {he_so_do_sang}'
+    )
+    cv.putText(
+        anh_ket_qua,
+        chu_hien_thi,
+        (10, 30),
+        cv.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (0, 255, 0),
+        2
+    )
+    cv.imshow("Anh goc", anh_goc)
+    cv.imshow("Do sang & Tuong phan", anh_ket_qua)
+    phim = cv.waitKey(1)
+    if phim == 27:
+        break
+cv.destroyAllWindows()
