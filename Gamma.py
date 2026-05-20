@@ -1,0 +1,50 @@
+import cv2 as cv
+import numpy as np
+anh = cv.imread("c2.jpg")
+if anh is None:
+    print("Không tìm thấy ảnh!")
+    exit()
+def gamma_correction(anh_goc, gamma):
+    bang_tra = np.array([
+        ((i / 255.0) ** gamma) * 255
+        for i in range(256)
+    ]).astype("uint8")
+    return cv.LUT(anh_goc, bang_tra)
+cv.namedWindow("Gamma Correction")
+def khong_lam_gi(x):
+    pass
+cv.createTrackbar(
+    "Gamma x100",
+    "Gamma Correction",
+    100,
+    300,
+    khong_lam_gi
+)
+while True:
+    gia_tri_gamma = cv.getTrackbarPos(
+        "Gamma x100",
+        "Gamma Correction"
+    )
+    if gia_tri_gamma == 0:
+        gia_tri_gamma = 1
+    gamma = gia_tri_gamma / 100.0
+    anh_gamma = gamma_correction(
+        anh,
+        gamma
+    )
+    anh_hien_thi = anh_gamma.copy()
+    cv.putText(
+        anh_hien_thi,
+        f'Gamma: {gamma:.2f}',
+        (10, 30),
+        cv.FONT_HERSHEY_SIMPLEX,
+        0.8,
+        (0, 255, 0),
+        2
+    )
+    cv.imshow("Anh goc", anh)
+    cv.imshow("Gamma Correction", anh_hien_thi)
+    phim = cv.waitKey(1)
+    if phim == 27:
+        break
+cv.destroyAllWindows()
